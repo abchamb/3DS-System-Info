@@ -32,7 +32,7 @@ jobs:
           export PATH=$DEVKITARM/bin:$PATH
           make
 
-      - name: Save build
+      - name: Upload files
         uses: actions/upload-artifact@v4
         with:
           name: 3DS-System-Info
