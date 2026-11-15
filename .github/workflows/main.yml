@@ -3,13 +3,14 @@ name: Build 3DS System Info
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Get source code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install devkitPro
@@ -24,14 +25,14 @@ jobs:
         run: |
           sudo dkp-pacman -Sy --noconfirm 3ds-dev
 
-      - name: Build application
+      - name: Build
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM=$DEVKITPRO/devkitARM
           export PATH=$DEVKITARM/bin:$PATH
           make
 
-      - name: Upload build
+      - name: Save build
         uses: actions/upload-artifact@v4
         with:
           name: 3DS-System-Info
