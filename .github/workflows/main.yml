@@ -1,0 +1,40 @@
+name: Build 3DS System Info
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v4
+
+      - name: Install devkitPro
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://apt.devkitpro.org/install-devkitpro-pacman
+          chmod +x install-devkitpro-pacman
+          sudo ./install-devkitpro-pacman
+
+      - name: Install 3DS tools
+        run: |
+          sudo dkp-pacman -Sy --noconfirm 3ds-dev
+
+      - name: Build application
+        run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=$DEVKITPRO/devkitARM
+          export PATH=$DEVKITARM/bin:$PATH
+          make
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: 3DS-System-Info
+          path: |
+            *.3dsx
+            *.smdh
